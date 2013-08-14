@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:clickable="false">
+
+    <ImageView
+        style="@android:attr/borderlessButtonStyle"
+        android:id="@+id/clear_local"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:focusable="false"
+        android:src="@drawable/clear"/>
+        
+    <ImageView
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/clear_local"
+        android:layout_alignBaseline="@id/clear_local"
+        style="@android:attr/borderlessButtonStyle"
+        android:id="@+id/entryAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/promote"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:focusable="false"
+        android:src="@drawable/add"/>
+    
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center_vertical"
+        android:layout_above="@id/entryAdd"
+        android:divider="@android:drawable/divider_horizontal_bright"
+        android:drawSelectorOnTop="false"/>
+
+    <TextView
+        android:gravity="center_horizontal|center_vertical"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/emptyMessageslist"
+        android:layout_above="@id/entryAdd" />
+</RelativeLayout>

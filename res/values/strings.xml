@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">sQueue</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Queue</string>
+    <string name="user_profile">User profile</string>
+    <string name="user_name">Login name</string>
+    <string name="user_name_summary">Login name for your messages</string>
+    <string name="pref_vibrate">Vibrate</string>
+    <string name="pref_vibrate_summary">Enable vibrate for notification</string>
+    <string name="pref_logo">Picture</string>
+    <string name="selectlogo">Select your profile picture</string>
+    <string name="emptyMessageslist">Ops :( there is no messages.</string>
+    <string name="emptypromotionslist">Queue is empty, check later</string>
+    <string name="promote">Add promotion</string>
+    <string name="title">Title</string>
+    <string name="text">Content</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_image">Add image</string>
+    <string name="delete">Delete</string>
+    <string name="clear">Clear</string>
+    <string name="clear_alert_title">Clear promoations</string>
+    <string name="clear_alert_text">Are you sure you want to delete all promotions?</string>
+    <string name="add_promotion_error_alert_title">Adding promotion error</string>
+    <string name="add_promotion_error_alert_text">Promotion is missing title or content</string>
+    <string name="promotionImage">Promotion image</string>
+ </resources>

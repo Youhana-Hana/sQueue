@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/entryTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:padding="3dp"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textIsSelectable="false" />
+
+    <TextView
+        android:id="@+id/entrySummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/entryTitle"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:maxLength="100"
+        android:maxLines="2"
+        android:padding="3dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="false"/>
+
+      <ImageView 
+        android:id="@+id/entryDelete"
+        style="@android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:focusable="false"
+        android:layout_marginRight="5dp"
+        android:layout_alignTop="@id/entrySummary"
+        android:onClick="deleteEntry"
+        android:background="@drawable/delete" />
+     
+    <ImageView
+        android:id="@+id/entryImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/entryDelete"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/promotionImage"
+        android:focusable="false"
+        android:maxHeight="@dimen/large_image_height"
+        android:maxWidth="@dimen/large_image_with" />
+</RelativeLayout>
