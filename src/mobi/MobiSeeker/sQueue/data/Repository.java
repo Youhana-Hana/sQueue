@@ -56,13 +56,6 @@ public class Repository {
 		if (files == null) {
 			return;
 		}
-
-		for (File file : files) {
-			if (file.getName().compareTo(entry.getFileName()) == 0) {
-				file.delete();
-				return;
-			}
-		}
 	}
 
 	private File getLocalFolder(Context context) {
@@ -70,19 +63,7 @@ public class Repository {
 	}
 
 	private void createFile(Entry entry, File local) throws IOException {
-		File entryFile = new File(local.getPath(), entry.getFileName());
-
-		if (!entryFile.exists()) {
-			entryFile.createNewFile();
-		}
-
-		FileOutputStream fileOutputStream = new FileOutputStream(entryFile,
-				false);
-		byte[] buffer = new Gson().toJson(entry).getBytes("UTF-8");
-		fileOutputStream.write(buffer);
-		fileOutputStream.flush();
-		fileOutputStream.close();
-	}
+			}
 
 	public ArrayList<Entry> getEntries(Context context) throws Exception {
 

@@ -124,17 +124,6 @@ public class Queue extends FragmentActivity implements
 		promotedList.delete(entry);
 	}
 
-	public void deleteRemoteEntry(View view) {
-		Entry entry = (Entry) view.getTag();
-		if (entry == null) {
-			return;
-		}
-
-		PromotionsList promotionsList = (PromotionsList) mSectionsPagerAdapter
-				.instantiateItem(mViewPager, 0);
-		promotionsList.delete(entry);
-	}
-
 	public void pickLogo(View view) {
 		this.pickImageFromGallery(REQ_CODE_PICK_IMAGE_SETTINS);
 	}

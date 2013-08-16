@@ -44,14 +44,6 @@ public class Promotion extends Fragment {
 
 		this.entryFromIntent = entry;
 
-		this.entryTitle.setText(entry.getTitle());
-		this.entrySummary.setText(entry.getText());
-		String imageUrl = entry.getImagePath();
-		if (imageUrl.isEmpty() || imageUrl == null) {
-			return;
-		}
-
-		this.entryImage.setImageURI(Uri.parse(entry.getImagePath()));
 	}
 
 	void goHome() {

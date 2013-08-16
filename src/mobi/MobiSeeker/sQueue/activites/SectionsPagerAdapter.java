@@ -28,7 +28,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 	}
 
 	private Fragment getPromotions() {
-			return new PromotionsList();
+			return new NodesList();
 	}
 
 	@Override

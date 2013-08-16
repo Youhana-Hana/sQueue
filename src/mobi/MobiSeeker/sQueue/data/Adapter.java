@@ -15,11 +15,8 @@ import android.widget.TextView;
 public class Adapter extends ArrayAdapter<Entry> {
 
     static class ViewHolder {
-        public TextView title;
-        public TextView text;
+        public TextView name;
         public ImageView logo;
-        public ImageView image;
-        public ImageView delete;
     }
 
     protected Context context;
@@ -41,26 +38,20 @@ public class Adapter extends ArrayAdapter<Entry> {
 
             rowView = inflater.inflate(resourceId, null);
             ViewHolder viewHolder = new ViewHolder();
-            viewHolder.title = (TextView) rowView.findViewById(R.id.entryTitle);
-            viewHolder.text = (TextView) rowView.findViewById(R.id.entrySummary);
+            viewHolder.name = (TextView) rowView.findViewById(R.id.entryTitle);
             viewHolder.logo = (ImageView) rowView.findViewById(R.id.entryLogo);
-            viewHolder.image = (ImageView) rowView.findViewById(R.id.entryImage);
-            viewHolder.delete = (ImageView) rowView.findViewById(R.id.entryDelete);
             rowView.setTag(viewHolder);
         }
 
         ViewHolder viewHolder = (ViewHolder) rowView.getTag();
         Entry entry = this.entries.get(position);
 
-        viewHolder.title.setText(entry.getTitle());
-        viewHolder.text.setText(entry.getText());
+        viewHolder.name.setText(entry.getName());
         
         if (viewHolder.logo != null) {
         	viewHolder.logo.setImageURI(Uri.parse(entry.getLogo()));
         }
         
-        viewHolder.image.setImageURI(Uri.parse(entry.getImagePath()));
-        viewHolder.delete.setTag(entry);
         return rowView;
     }
  }
