@@ -25,4 +25,5 @@
     <string name="add_promotion_error_alert_title">Adding promotion error</string>
     <string name="add_promotion_error_alert_text">Promotion is missing title or content</string>
     <string name="promotionImage">Promotion image</string>
+    <string name="empty_conversation">type a message and send it.</string>
  </resources>

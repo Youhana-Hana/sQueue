@@ -4,6 +4,7 @@ import mobi.MobiSeeker.sQueue.R;
 import mobi.MobiSeeker.sQueue.data.Entry;
 import mobi.MobiSeeker.sQueue.data.Settings;
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -18,16 +20,12 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 
-public class Queue extends FragmentActivity implements
-		ActionBar.TabListener {
+public class Queue extends FragmentActivity implements ActionBar.TabListener {
 
 	public static final String Local = "local";
 	public static final String Remote = "remote";
-	public static final String View_Promotion_Action = "mobi.MobiSeeker.sQueue.VIEW_PROMOTION";
-	public static final String View_Remote_Promotion_Action = "mobi.MobiSeeker.sQueue.VIEW_REMOTE_PROMOTION";
-	public static String Add_New_Promotion_Action = "mobi.MobiSeeker.sQueue.ADD_NEW_PROMOTION";
-	public static String Delete_Local_Promotion_Action = "mobi.MobiSeeker.sQueue.DELETE_LOCAL_PROMOTION";
-	public static String View_local_Promotions_Action = "mobi.MobiSeeker.sQueue.VIEW_LOCAL_PROMOTIONS";
+	public static final String New_Messag_Action = "mobi.MobiSeeker.sQueue.NEW_MESSAGE";
+	public static final String View_Contact_Action = "mobi.MobiSeeker.sQueue.VIEW_CONTACT";
 	private final int REQ_CODE_PICK_IMAGE_SETTINS = 1;
 	private final int REQ_CODE_PICK_IMAGE = 2;
 
@@ -62,12 +60,10 @@ public class Queue extends FragmentActivity implements
 
 		this.addTabs(actionBar);
 
-		this.intentFIlter = new IntentFilter(
-				Queue.Add_New_Promotion_Action);
+		this.intentFIlter = new IntentFilter();
 
-		this.intentFIlter.addAction(Queue.View_local_Promotions_Action);
-		this.intentFIlter.addAction(Queue.View_Promotion_Action);
-		this.intentFIlter.addAction(Queue.View_Remote_Promotion_Action);
+		this.intentFIlter.addAction(Queue.New_Messag_Action);
+		this.intentFIlter.addAction(Queue.View_Contact_Action);
 
 		receiver = new BroadcastReceiver() {
 			@Override
@@ -78,6 +74,40 @@ public class Queue extends FragmentActivity implements
 	}
 
 	protected void handleReceiverIntent(Intent intent) {
+		if (intent.getAction().equalsIgnoreCase(Queue.New_Messag_Action)) {
+
+		} else if (intent.getAction().equalsIgnoreCase(
+				Queue.View_Contact_Action)) {
+			Entry entry = (Entry) intent.getSerializableExtra("entry");
+			AddConversationTab(entry);
+		}
+	}
+
+	private void AddConversationTab(Entry entry) {
+		ActionBar actionBar = getActionBar();
+		Tab tab = getTabByName(actionBar, entry.getName());
+		if (tab == null) {
+			tab = actionBar.newTab()
+			.setText(entry.getName())
+			.setIcon(Drawable.createFromPath(entry.getLogo()))
+			.setTabListener(this);
+			int index  = actionBar.getTabCount() -1;
+			actionBar.addTab(tab, index);
+			mViewPager.setCurrentItem(2);
+		}
+	}
+
+	private Tab getTabByName(ActionBar actionBar, String name) {
+		int tabs = actionBar.getTabCount();
+
+		for (int index = 0; index < tabs; index++) {
+			if (actionBar.getTabAt(index).getText().toString()
+					.compareToIgnoreCase(name) == 0) {
+				return actionBar.getTabAt(index);
+			}
+		}
+
+		return null;
 	}
 
 	@Override
@@ -111,17 +141,6 @@ public class Queue extends FragmentActivity implements
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}
-
-	public void deleteEntry(View view) {
-		Entry entry = (Entry) view.getTag();
-		if (entry == null) {
-			return;
-		}
-
-		PromotedList promotedList = (PromotedList) mSectionsPagerAdapter
-				.instantiateItem(mViewPager, 1);
-		promotedList.delete(entry);
 	}
 
 	public void pickLogo(View view) {

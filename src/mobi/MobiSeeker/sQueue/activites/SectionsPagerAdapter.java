@@ -22,8 +22,10 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		switch(position) {
 		case 0:	
 			return getPromotions();
-		default:
+		case 1: 
 			return new SettingsFragment();
+		default:
+			return new Covnersation();
 		}
 	}
 

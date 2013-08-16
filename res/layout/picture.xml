@@ -20,6 +20,11 @@
         android:layout_marginBottom="6dip"
         android:layout_weight="1">
 
+	     <ImageView 
+	         android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/divider_horizontal_dim_dark"/>
+	     
         <TextView android:id="@+android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
