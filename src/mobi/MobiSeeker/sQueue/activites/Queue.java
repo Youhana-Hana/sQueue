@@ -93,7 +93,11 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 			.setTabListener(this);
 			int index  = actionBar.getTabCount() -1;
 			actionBar.addTab(tab, index);
-			mViewPager.setCurrentItem(2);
+			this.mSectionsPagerAdapter.AddPageIn();
+			this.mSectionsPagerAdapter.notifyDataSetChanged();
+			actionBar.setSelectedNavigationItem(index);
+		} else {
+			actionBar.setSelectedNavigationItem(tab.getPosition());
 		}
 	}
 

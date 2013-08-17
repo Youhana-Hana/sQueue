@@ -20,10 +20,6 @@
     <string name="add_image">Add image</string>
     <string name="delete">Delete</string>
     <string name="clear">Clear</string>
-    <string name="clear_alert_title">Clear promoations</string>
-    <string name="clear_alert_text">Are you sure you want to delete all promotions?</string>
-    <string name="add_promotion_error_alert_title">Adding promotion error</string>
-    <string name="add_promotion_error_alert_text">Promotion is missing title or content</string>
-    <string name="promotionImage">Promotion image</string>
-    <string name="empty_conversation">type a message and send it.</string>
+    <string name="promotionImage">Image</string>
+    <string name="empty_conversation">No conversations.</string>
  </resources>
