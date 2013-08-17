@@ -16,7 +16,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -26,6 +28,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 	public static final String Remote = "remote";
 	public static final String New_Messag_Action = "mobi.MobiSeeker.sQueue.NEW_MESSAGE";
 	public static final String View_Contact_Action = "mobi.MobiSeeker.sQueue.VIEW_CONTACT";
+	private static final String Remove_Conversation = "mobi.MobiSeeker.sQueue.REMOVE_CONTACT";
 	private final int REQ_CODE_PICK_IMAGE_SETTINS = 1;
 	private final int REQ_CODE_PICK_IMAGE = 2;
 
@@ -64,6 +67,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 
 		this.intentFIlter.addAction(Queue.New_Messag_Action);
 		this.intentFIlter.addAction(Queue.View_Contact_Action);
+		this.intentFIlter.addAction(Queue.Remove_Conversation);
 
 		receiver = new BroadcastReceiver() {
 			@Override
@@ -80,6 +84,12 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 				Queue.View_Contact_Action)) {
 			Entry entry = (Entry) intent.getSerializableExtra("entry");
 			AddConversationTab(entry);
+			return;
+		} else if (intent.getAction().equalsIgnoreCase(
+				Queue.Remove_Conversation)) {
+			int position = intent.getIntExtra("tabPosition", -1);
+			removeTab(position);
+			return;
 		}
 	}
 
@@ -87,11 +97,11 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 		ActionBar actionBar = getActionBar();
 		Tab tab = getTabByName(actionBar, entry.getName());
 		if (tab == null) {
-			tab = actionBar.newTab()
-			.setText(entry.getName())
-			.setIcon(Drawable.createFromPath(entry.getLogo()))
-			.setTabListener(this);
-			int index  = actionBar.getTabCount() -1;
+			tab = actionBar.newTab().setText(entry.getName())
+					.setIcon(Drawable.createFromPath(entry.getLogo()))
+					.setTabListener(this);
+
+			int index = actionBar.getTabCount() - 1;
 			actionBar.addTab(tab, index);
 			this.mSectionsPagerAdapter.AddPageIn();
 			this.mSectionsPagerAdapter.notifyDataSetChanged();
@@ -145,6 +155,42 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+
+		if (tab.getPosition() == 0
+				|| tab.getPosition() == mSectionsPagerAdapter.getCount() - 1) {
+			return;
+		}
+
+		Integer count = (Integer) tab.getTag();
+		if (count == null) {
+			tab.setTag(1);
+			return;
+		}
+
+		if (count == 2) {
+			Intent intent = new Intent(Queue.Remove_Conversation);
+			intent.putExtra("tabPosition", tab.getPosition());
+			sendBroadcast(intent);
+			return;
+		}
+
+		tab.setTag(++count);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		int action = MotionEventCompat.getActionMasked(event);
+
+		switch (action) {
+		case (MotionEvent.ACTION_DOWN):
+			removeTab(getActionBar().getSelectedNavigationIndex());
+			return true;
+		case (MotionEvent.ACTION_CANCEL):
+			removeTab(getActionBar().getSelectedNavigationIndex());
+			return true;
+		default:
+			return super.onTouchEvent(event);
+		}
 	}
 
 	public void pickLogo(View view) {
@@ -229,5 +275,17 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+	}
+
+	private void removeTab(int position) {
+		if (position == 0 || position == mSectionsPagerAdapter.getCount() -1) {
+			return;
+		}
+
+		ActionBar actionBar = getActionBar();
+		mSectionsPagerAdapter.takePageOut();
+		actionBar.getTabAt(position - 1).setTag(null);
+		actionBar.setSelectedNavigationItem(position - 1);
+		actionBar.removeTabAt(position);
 	}
 }
