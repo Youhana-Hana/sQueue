@@ -144,6 +144,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+		tab.setTag(null);
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
@@ -156,8 +157,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 
-		if (tab.getPosition() == 0
-				|| tab.getPosition() == mSectionsPagerAdapter.getCount() - 1) {
+		if (this.isPermitTabs(tab.getPosition())) {
 			return;
 		}
 
@@ -278,7 +278,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 	}
 
 	private void removeTab(int position) {
-		if (position == 0 || position == mSectionsPagerAdapter.getCount() -1) {
+		if (this.isPermitTabs(position)) {
 			return;
 		}
 
@@ -287,5 +287,10 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 		actionBar.getTabAt(position - 1).setTag(null);
 		actionBar.setSelectedNavigationItem(position - 1);
 		actionBar.removeTabAt(position);
+	}
+
+	private boolean isPermitTabs(int position) {
+		return position == 0
+				|| position == mSectionsPagerAdapter.getCount() - 1;
 	}
 }
