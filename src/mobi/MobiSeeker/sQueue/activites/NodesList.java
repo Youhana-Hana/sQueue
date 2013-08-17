@@ -25,9 +25,9 @@ public class NodesList extends ListFragment {
 		super.onViewCreated(view, savedInstanceState);
 		try {
 			this.repository = new Repository();
-			this.repository.add(new Entry("ME", "/sdcard/Pictures/pope.jpg"));
-			this.repository.add(new Entry("ME2", ""));
-			this.repository.add(new Entry("ME3", ""));
+			this.repository.add(new Entry("ME", "", "/sdcard/Pictures/pope.jpg"));
+			this.repository.add(new Entry("", "NodeName", ""));
+			this.repository.add(new Entry("ME3", "", ""));
 			PopulateList();
 		} catch (Exception e) {
 			e.printStackTrace();

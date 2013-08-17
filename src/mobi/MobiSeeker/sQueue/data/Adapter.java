@@ -46,7 +46,12 @@ public class Adapter extends ArrayAdapter<Entry> {
         ViewHolder viewHolder = (ViewHolder) rowView.getTag();
         Entry entry = this.entries.get(position);
 
-        viewHolder.name.setText(entry.getName());
+        String name = entry.getName();
+        if (name.isEmpty() || name == null) {
+        	name = entry.getNodeName();
+        }
+        
+        viewHolder.name.setText(name);
         
         if (viewHolder.logo != null) {
         	viewHolder.logo.setImageURI(Uri.parse(entry.getLogo()));

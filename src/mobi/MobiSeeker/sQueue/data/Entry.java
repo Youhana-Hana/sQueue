@@ -8,14 +8,19 @@ public class Entry implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public Entry(String name, String logo) {
+	public Entry(String name, String nodeName, String logo) {
 
 		this.name = name;
+		this.nodeName = nodeName;
 		this.logo = logo;
-		}
+	}
 
 	public String getName() {
 		return toDefault(this.name);
+	}
+
+	public String getNodeName() {
+		return toDefault(this.nodeName);
 	}
 
 	public String getLogo() {
@@ -39,10 +44,15 @@ public class Entry implements Serializable {
 		this.name = name;
 	}
 
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+
 	public void setLogo(String logo) {
 		this.logo = logo;
 	}
 
 	private String name;
+	private String nodeName;
 	private String logo;
-	}
+}
