@@ -10,8 +10,8 @@
         android:layout_alignParentLeft="true"
         android:adjustViewBounds="true"
         android:focusable="false"
-        android:maxHeight="@dimen/large_image_height"
-        android:maxWidth="@dimen/large_image_with" />
+        android:maxHeight="@dimen/small_image_height"
+        android:maxWidth="@dimen/small_image_with" />
 
     <TextView
         android:id="@+id/entryTitle"
@@ -22,7 +22,7 @@
         android:ellipsize="marquee"
         android:fadingEdge="horizontal"
         android:padding="5dp"
-        android:singleLine="true"
+        android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textIsSelectable="false" />
 

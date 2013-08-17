@@ -106,6 +106,9 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 			this.mSectionsPagerAdapter.AddPageIn();
 			this.mSectionsPagerAdapter.notifyDataSetChanged();
 			actionBar.setSelectedNavigationItem(index);
+			Covnersation covnersation = (Covnersation) mSectionsPagerAdapter
+					.instantiateItem(mViewPager, index);
+			covnersation.setEntry(entry);
 		} else {
 			actionBar.setSelectedNavigationItem(tab.getPosition());
 		}

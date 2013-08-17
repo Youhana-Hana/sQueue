@@ -14,44 +14,46 @@ import android.widget.TextView;
 
 public class MessageAdapter extends ArrayAdapter<Message> {
 
-    static class ViewHolder {
-        public TextView name;
-        public ImageView logo;
-    }
+	static class ViewHolder {
+		public TextView name;
+		public ImageView logo;
+	}
 
-    protected Context context;
-    protected List<Message> entries;
-    int resourceId;
-    public MessageAdapter(Context context, int resourceId, List<Message> entries) {
-        super(context, resourceId, entries);
-        this.context = context;
-        this.resourceId = resourceId;
-        this.entries = entries;
-    }
+	protected Context context;
+	protected List<Message> entries;
+	int resourceId;
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = convertView;
+	public MessageAdapter(Context context, int resourceId, List<Message> entries) {
+		super(context, resourceId, entries);
+		this.context = context;
+		this.resourceId = resourceId;
+		this.entries = entries;
+	}
 
-        if (rowView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		View rowView = convertView;
 
-            rowView = inflater.inflate(resourceId, null);
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.name = (TextView) rowView.findViewById(R.id.entryTitle);
-            viewHolder.logo = (ImageView) rowView.findViewById(R.id.entryLogo);
-            rowView.setTag(viewHolder);
-        }
+		if (rowView == null) {
+			LayoutInflater inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        ViewHolder viewHolder = (ViewHolder) rowView.getTag();
-        Message message = this.entries.get(position);
+			rowView = inflater.inflate(resourceId, null);
+			ViewHolder viewHolder = new ViewHolder();
+			viewHolder.name = (TextView) rowView.findViewById(R.id.entryTitle);
+			viewHolder.logo = (ImageView) rowView.findViewById(R.id.entryLogo);
+			rowView.setTag(viewHolder);
+		}
 
-        viewHolder.name.setText(message.getContent());
-        
-        if (viewHolder.logo != null) {
-        	viewHolder.logo.setImageURI(Uri.parse(message.getPicture()));
-        }
-        
-        return rowView;
-    }
- }
+		ViewHolder viewHolder = (ViewHolder) rowView.getTag();
+		Message message = this.entries.get(position);
+
+		viewHolder.name.setText(message.getFrom() + message.getContent());
+
+		if (viewHolder.logo != null && message.getLogo() != null) {
+			viewHolder.logo.setImageURI(Uri.parse(message.getLogo()));
+		}
+
+		return rowView;
+	}
+}

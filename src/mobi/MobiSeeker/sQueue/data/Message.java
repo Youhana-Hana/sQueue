@@ -8,11 +8,12 @@ public class Message implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public Message(String from, String content) {
+	public Message(String from, String content, String logo) {
 
 		this.from = from;
 		this.content = content;
-		}
+		this.logo = logo;
+	}
 
 	public String getFrom() {
 		return toDefault(this.from);
@@ -22,6 +23,10 @@ public class Message implements Serializable {
 		return toDefault(this.content);
 	}
 
+	public String getLogo() {
+		return this.logo;
+	}
+	
 	private String toDefault(String value) {
 		if (value == null) {
 			return "";
@@ -39,15 +44,11 @@ public class Message implements Serializable {
 		this.from = from;
 	}
 
-	public void setLogo(String content) {
-		this.content = content;
+	public void setLogo(String logo) {
+		this.logo = logo;
 	}
-
+	
 	private String from;
 	private String content;
-
-	public String getPicture() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	}
+	private String logo;
+}
