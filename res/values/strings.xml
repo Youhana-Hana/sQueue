@@ -22,5 +22,6 @@
     <string name="clear">Clear</string>
     <string name="promotionImage">Image</string>
     <string name="empty_conversation">No conversations.</string>
-    <string name="me">Me: </string>
+    <string name="me">Me</string>
+    <string name="all">All</string>
  </resources>

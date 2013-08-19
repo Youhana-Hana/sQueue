@@ -86,7 +86,8 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 		} else if (intent.getAction().equalsIgnoreCase(
 				Queue.View_Contact_Action)) {
 			Entry entry = (Entry) intent.getSerializableExtra("entry");
-			AddConversationTab(entry, true);
+			String tabName = getEntryTabName(entry);
+			AddConversationTab(entry, tabName, true);
 			return;
 		} else if (intent.getAction().equalsIgnoreCase(
 				Queue.Remove_Conversation)) {
@@ -96,29 +97,31 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 		}
 	}
 
-	private void addMessage(Message message) {
-		ActionBar actionBar = getActionBar();
-		int index = 0;
-		for (index = 1; index < actionBar.getTabCount() - 1; index++) {
-			Covnersation conversation = (Covnersation) mSectionsPagerAdapter
-					.instantiateItem(mViewPager, index);
-			if (conversation.isEntryHere(message.getFrom())) {
-				conversation.addRemoteMessage(message);
-				return;
-			}
+	private Tab getTabForMessage(ActionBar actionBar, Message message) {
+		String tabName = this.getEntryTabName(message.getFrom());
+		Tab tab = this.getTabByName(actionBar, tabName);
+		if (tab != null) {
+			return tab;
 		}
 
-		index = this.AddConversationTab(message.getFrom(), false);
+		boolean focus = mSectionsPagerAdapter.getCount() == 2;
+		String allTab = this.getString(R.string.all);
+		return this.AddConversationTab(message.getFrom(), allTab, focus);
+	}
+
+	private void addMessage(Message message) {
+		ActionBar actionBar = getActionBar();
+		Tab tab = getTabForMessage(actionBar, message);
 		Covnersation conversation = (Covnersation) mSectionsPagerAdapter
-				.instantiateItem(mViewPager, index);
+				.instantiateItem(mViewPager, tab.getPosition());
 		conversation.addRemoteMessage(message);
 	}
 
-	private int AddConversationTab(Entry entry, boolean focus) {
+	private Tab AddConversationTab(Entry entry, String tabName, boolean focus) {
 		ActionBar actionBar = getActionBar();
-		Tab tab = getTabByName(actionBar, entry.getName());
+		Tab tab = getTabByName(actionBar, tabName);
 		if (tab == null) {
-			tab = actionBar.newTab().setText(entry.getName().isEmpty() ? entry.getNodeName() : entry.getName())
+			tab = actionBar.newTab().setText(tabName)
 					.setIcon(Drawable.createFromPath(entry.getLogo()))
 					.setTabListener(this);
 
@@ -132,15 +135,19 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 			if (focus) {
 				actionBar.setSelectedNavigationItem(index);
 			}
-
-			return index;
 		} else {
 			if (focus) {
 				actionBar.setSelectedNavigationItem(tab.getPosition());
 			}
-
-			return tab.getPosition();
 		}
+
+		return tab;
+	}
+
+	private String getEntryTabName(Entry entry) {
+		String tabNme = entry.getName().isEmpty() ? entry.getNodeName() : entry
+				.getName();
+		return tabNme;
 	}
 
 	private Tab getTabByName(ActionBar actionBar, String name) {
@@ -319,6 +326,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 		actionBar.getTabAt(position - 1).setTag(null);
 		actionBar.setSelectedNavigationItem(position - 1);
 		actionBar.removeTabAt(position);
+		mSectionsPagerAdapter.notifyDataSetChanged();
 	}
 
 	private boolean isPermitTabs(int position) {
