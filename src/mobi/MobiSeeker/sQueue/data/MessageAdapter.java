@@ -48,7 +48,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 		ViewHolder viewHolder = (ViewHolder) rowView.getTag();
 		Message message = this.entries.get(position);
 
-		viewHolder.name.setText(message.getFrom() + message.getContent());
+		viewHolder.name.setText(message.getFrom().getName() + message.getContent());
 
 		if (viewHolder.logo != null && message.getLogo() != null) {
 			viewHolder.logo.setImageURI(Uri.parse(message.getLogo()));

@@ -2,17 +2,20 @@ package mobi.MobiSeeker.sQueue.data;
 
 import java.io.Serializable;
 
+import android.location.Location;
+
 import com.google.gson.Gson;
 
 public class Entry implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public Entry(String name, String nodeName, String logo) {
+	public Entry(String name, String nodeName, String logo, Location location) {
 
 		this.name = name;
 		this.nodeName = nodeName;
 		this.logo = logo;
+		this.location = location;
 	}
 
 	public String getName() {
@@ -27,6 +30,10 @@ public class Entry implements Serializable {
 		return toDefault(this.logo);
 	}
 
+	public Location getLocation() {
+		return this.location;
+	}
+	
 	private String toDefault(String value) {
 		if (value == null) {
 			return "";
@@ -55,4 +62,5 @@ public class Entry implements Serializable {
 	private String name;
 	private String nodeName;
 	private String logo;
+	private Location location;
 }

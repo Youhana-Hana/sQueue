@@ -21,17 +21,21 @@ public class Covnersation extends ListFragment {
 
 	private ImageView send = null;
 	private Messages messages = null;
-	private MessageAdapter adapter= null;
-	private Entry entry = null;
+	private MessageAdapter adapter = null;
+	private ArrayList<Entry> entries = null;
 	private ArrayList<Message> messagesList;
 	private EditText content;
 	private Settings settings;
+
+	public Covnersation() {
+		this.entries = new ArrayList<Entry>();
+		this.messages = new Messages();
+	}
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		try {
-			this.messages = new Messages();
 			this.settings = new Settings(this.getActivity().getBaseContext());
 			PopulateList();
 		} catch (Exception e) {
@@ -42,8 +46,9 @@ public class Covnersation extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater
-				.inflate(R.layout.conversation, container, false);
+		
+		View rootView = inflater.inflate(R.layout.conversation, container,
+				false);
 
 		this.content = (EditText) rootView.findViewById(R.id.message_content);
 		this.send = (ImageView) rootView.findViewById(R.id.send);
@@ -57,23 +62,43 @@ public class Covnersation extends ListFragment {
 		return rootView;
 	}
 
-	 public void sendMessage() {
-		 this.addLocalMessage();
-		 this.sendRemoteMessage();
-	    }
+	public void sendMessage() {
+		this.addLocalMessage();
+		this.sendRemoteMessage();
+	}
+
+	public void addRemoteMessage(Message message) {
+		this.messagesList.add(0, message);
+		this.adapter.notifyDataSetChanged();
+	}
+
+	public void addEntry(Entry entry) {
+		this.entries.add(entry);
+	}
+
+	public boolean isEntryHere(Entry entry) {
+		for (Entry item : this.entries) {
+			if (item.getName().equalsIgnoreCase(entry.getName())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	private void addLocalMessage() {
-		Message message = new Message(getActivity().getResources().getString(R.string.me), 
-				this.content.getText().toString(),
-				this.settings.getLogo());
-		
+		Message message = new Message(new Entry(getActivity().getResources()
+				.getString(R.string.me), "", "", null), this.content.getText()
+				.toString(), this.settings.getLogo());
+
 		this.messagesList.add(0, message);
 		this.adapter.notifyDataSetChanged();
 	}
 
 	private void sendRemoteMessage() {
-		 // send message to this node
-		 // this.entry.getNodeName();
+		for (Entry entry : this.entries) {
+			// send message
+		}
 	}
 
 	private void PopulateList() throws Exception {
@@ -82,9 +107,5 @@ public class Covnersation extends ListFragment {
 		this.adapter = new MessageAdapter(context, R.layout.message,
 				this.messagesList);
 		setListAdapter(this.adapter);
-	}
-
-	public void setEntry(Entry entry) {
-		this.entry  = entry;
 	}
 }

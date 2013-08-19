@@ -8,15 +8,15 @@ public class Message implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public Message(String from, String content, String logo) {
+	public Message(Entry from, String content, String logo) {
 
 		this.from = from;
 		this.content = content;
 		this.logo = logo;
 	}
 
-	public String getFrom() {
-		return toDefault(this.from);
+	public Entry getFrom() {
+		return this.from;
 	}
 
 	public String getContent() {
@@ -40,7 +40,7 @@ public class Message implements Serializable {
 		return new Gson().toJson(this);
 	}
 
-	public void setName(String from) {
+	public void setName(Entry from) {
 		this.from = from;
 	}
 
@@ -48,7 +48,7 @@ public class Message implements Serializable {
 		this.logo = logo;
 	}
 	
-	private String from;
+	private Entry from;
 	private String content;
 	private String logo;
 }

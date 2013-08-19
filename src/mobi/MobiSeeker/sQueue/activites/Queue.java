@@ -2,6 +2,7 @@ package mobi.MobiSeeker.sQueue.activites;
 
 import mobi.MobiSeeker.sQueue.R;
 import mobi.MobiSeeker.sQueue.data.Entry;
+import mobi.MobiSeeker.sQueue.data.Message;
 import mobi.MobiSeeker.sQueue.data.Settings;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -28,7 +29,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 	public static final String Remote = "remote";
 	public static final String New_Messag_Action = "mobi.MobiSeeker.sQueue.NEW_MESSAGE";
 	public static final String View_Contact_Action = "mobi.MobiSeeker.sQueue.VIEW_CONTACT";
-	private static final String Remove_Conversation = "mobi.MobiSeeker.sQueue.REMOVE_CONTACT";
+	private static final String Remove_Conversation = "mobi.MobiSeeker.sQueue.REMOVE_CONTAC1T";
 	private final int REQ_CODE_PICK_IMAGE_SETTINS = 1;
 	private final int REQ_CODE_PICK_IMAGE = 2;
 
@@ -79,11 +80,13 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 
 	protected void handleReceiverIntent(Intent intent) {
 		if (intent.getAction().equalsIgnoreCase(Queue.New_Messag_Action)) {
-
+			Message message = (Message) intent.getSerializableExtra("message");
+			addMessage(message);
+			return;
 		} else if (intent.getAction().equalsIgnoreCase(
 				Queue.View_Contact_Action)) {
 			Entry entry = (Entry) intent.getSerializableExtra("entry");
-			AddConversationTab(entry);
+			AddConversationTab(entry, true);
 			return;
 		} else if (intent.getAction().equalsIgnoreCase(
 				Queue.Remove_Conversation)) {
@@ -93,11 +96,29 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 		}
 	}
 
-	private void AddConversationTab(Entry entry) {
+	private void addMessage(Message message) {
+		ActionBar actionBar = getActionBar();
+		int index = 0;
+		for (index = 1; index < actionBar.getTabCount() - 1; index++) {
+			Covnersation conversation = (Covnersation) mSectionsPagerAdapter
+					.instantiateItem(mViewPager, index);
+			if (conversation.isEntryHere(message.getFrom())) {
+				conversation.addRemoteMessage(message);
+				return;
+			}
+		}
+
+		index = this.AddConversationTab(message.getFrom(), false);
+		Covnersation conversation = (Covnersation) mSectionsPagerAdapter
+				.instantiateItem(mViewPager, index);
+		conversation.addRemoteMessage(message);
+	}
+
+	private int AddConversationTab(Entry entry, boolean focus) {
 		ActionBar actionBar = getActionBar();
 		Tab tab = getTabByName(actionBar, entry.getName());
 		if (tab == null) {
-			tab = actionBar.newTab().setText(entry.getName())
+			tab = actionBar.newTab().setText(entry.getName().isEmpty() ? entry.getNodeName() : entry.getName())
 					.setIcon(Drawable.createFromPath(entry.getLogo()))
 					.setTabListener(this);
 
@@ -105,12 +126,20 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 			actionBar.addTab(tab, index);
 			this.mSectionsPagerAdapter.AddPageIn();
 			this.mSectionsPagerAdapter.notifyDataSetChanged();
-			actionBar.setSelectedNavigationItem(index);
 			Covnersation covnersation = (Covnersation) mSectionsPagerAdapter
 					.instantiateItem(mViewPager, index);
-			covnersation.setEntry(entry);
+			covnersation.addEntry(entry);
+			if (focus) {
+				actionBar.setSelectedNavigationItem(index);
+			}
+
+			return index;
 		} else {
-			actionBar.setSelectedNavigationItem(tab.getPosition());
+			if (focus) {
+				actionBar.setSelectedNavigationItem(tab.getPosition());
+			}
+
+			return tab.getPosition();
 		}
 	}
 
