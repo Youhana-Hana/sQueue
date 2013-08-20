@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class Covnersation extends ListFragment {
+public class Conversation extends ListFragment {
 
 	private ImageView send = null;
 	private Messages messages = null;
@@ -27,7 +27,7 @@ public class Covnersation extends ListFragment {
 	private EditText content;
 	private Settings settings;
 
-	public Covnersation() {
+	public Conversation() {
 		this.entries = new ArrayList<Entry>();
 		this.messages = new Messages();
 	}
@@ -107,5 +107,9 @@ public class Covnersation extends ListFragment {
 		this.adapter = new MessageAdapter(context, R.layout.message,
 				this.messagesList);
 		setListAdapter(this.adapter);
+	}
+
+	public int getMessagesCount() {
+		return this.messagesList.size();
 	}
 }

@@ -112,7 +112,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 	private void addMessage(Message message) {
 		ActionBar actionBar = getActionBar();
 		Tab tab = getTabForMessage(actionBar, message);
-		Covnersation conversation = (Covnersation) mSectionsPagerAdapter
+		Conversation conversation = (Conversation) mSectionsPagerAdapter
 				.instantiateItem(mViewPager, tab.getPosition());
 		conversation.addRemoteMessage(message);
 	}
@@ -126,10 +126,10 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 					.setTabListener(this);
 
 			int index = actionBar.getTabCount() - 1;
-			actionBar.addTab(tab, index);
-			this.mSectionsPagerAdapter.AddPageIn();
+			this.mSectionsPagerAdapter.AddPageIn(index);
 			this.mSectionsPagerAdapter.notifyDataSetChanged();
-			Covnersation covnersation = (Covnersation) mSectionsPagerAdapter
+			actionBar.addTab(tab, index);
+			Conversation covnersation = (Conversation) mSectionsPagerAdapter
 					.instantiateItem(mViewPager, index);
 			covnersation.addEntry(entry);
 			if (focus) {
@@ -322,7 +322,7 @@ public class Queue extends FragmentActivity implements ActionBar.TabListener {
 		}
 
 		ActionBar actionBar = getActionBar();
-		mSectionsPagerAdapter.takePageOut();
+		mSectionsPagerAdapter.takePageOut(position);
 		actionBar.getTabAt(position - 1).setTag(null);
 		actionBar.setSelectedNavigationItem(position - 1);
 		actionBar.removeTabAt(position);

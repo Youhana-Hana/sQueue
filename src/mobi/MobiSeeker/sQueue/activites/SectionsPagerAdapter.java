@@ -1,5 +1,6 @@
 package mobi.MobiSeeker.sQueue.activites;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import mobi.MobiSeeker.sQueue.R;
@@ -12,31 +13,21 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
 	private Context context;
 	private int maxPagesCount;
-	private boolean pagesCountChanged;
-
+	private ArrayList<Fragment> items;
+	
 	public SectionsPagerAdapter(FragmentManager fm, Context context,
 			String nodeName) {
 		super(fm);
 		this.context = context;
 		this.maxPagesCount = 2;
-		this.pagesCountChanged = false;
+		this.items = new ArrayList<Fragment>();
+		this.items.add(new NodesList());
+		this.items.add(new SettingsFragment());
 	}
 
 	@Override
 	public Fragment getItem(int position) {
-		if (position == 0) {
-			return getQueueList();
-		}
-
-		if (position == this.maxPagesCount - 1) {
-			return new SettingsFragment();
-		}
-
-		return new Covnersation();
-	}
-
-	private Fragment getQueueList() {
-		return new NodesList();
+		return this.items.get(position);
 	}
 
 	@Override
@@ -63,23 +54,20 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getItemPosition(Object object) {
-		if (this.pagesCountChanged) {
-			return POSITION_NONE;
+		if (object instanceof mobi.MobiSeeker.sQueue.activites.NodesList) {
+			return POSITION_UNCHANGED;
 		}
-		return POSITION_UNCHANGED;
+		
+		return POSITION_NONE;
 	}
 
-	public void setMaxPagesCount(int count) {
-		this.maxPagesCount = count;
-	}
-
-	public void AddPageIn() {
+	public void AddPageIn(int index) {
+		this.items.add(index, new Conversation());
 		this.maxPagesCount++;
-		this.pagesCountChanged = true;
 	}
 
-	public void takePageOut() {
+	public void takePageOut(int index) {
+		this.items.remove(index);
 		this.maxPagesCount--;
-		this.pagesCountChanged = true;
 	}
 }
