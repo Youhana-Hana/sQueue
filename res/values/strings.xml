@@ -24,4 +24,7 @@
     <string name="empty_conversation">No conversations.</string>
     <string name="me">Me</string>
     <string name="all">All</string>
+    <string name="ask_for_image">Request an image</string>
+    <string name="ask_for_video">Request a video</string>
+    
  </resources>

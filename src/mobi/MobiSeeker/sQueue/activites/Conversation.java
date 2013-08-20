@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import mobi.MobiSeeker.sQueue.R;
 import mobi.MobiSeeker.sQueue.data.Entry;
 import mobi.MobiSeeker.sQueue.data.Message;
+import mobi.MobiSeeker.sQueue.data.Message.MessageType;
+import mobi.MobiSeeker.sQueue.data.IMessageSender;
 import mobi.MobiSeeker.sQueue.data.MessageAdapter;
 import mobi.MobiSeeker.sQueue.data.Messages;
 import mobi.MobiSeeker.sQueue.data.Settings;
@@ -13,11 +15,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class Conversation extends ListFragment {
+public class Conversation extends ListFragment implements IMessageSender {
 
 	private ImageView send = null;
 	private Messages messages = null;
@@ -26,17 +29,32 @@ public class Conversation extends ListFragment {
 	private ArrayList<Message> messagesList;
 	private EditText content;
 	private Settings settings;
+	private Entry entry;
+	private String nodeName;
 
 	public Conversation() {
 		this.entries = new ArrayList<Entry>();
 		this.messages = new Messages();
 	}
-	
+
+	public String getNodeName() {
+		return nodeName;
+	}
+
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		try {
-			this.settings = new Settings(this.getActivity().getBaseContext());
+			Context context = this.getActivity().getBaseContext();
+			this.settings = new Settings(context);
+			
+			this.entry = new Entry(context.getString(R.string.me),
+					this.nodeName, this.settings.getLogo(), null);
+
 			PopulateList();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,7 +64,7 @@ public class Conversation extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+
 		View rootView = inflater.inflate(R.layout.conversation, container,
 				false);
 
@@ -55,16 +73,48 @@ public class Conversation extends ListFragment {
 		this.send.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				sendMessage();
+				sendContent();
+			}
+		});
+
+		this.send.setOnLongClickListener(new View.OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				return showActions(v);
 			}
 		});
 
 		return rootView;
 	}
 
-	public void sendMessage() {
-		this.addLocalMessage();
-		this.sendRemoteMessage();
+	private void sendContent() {
+		String content = this.content.getText().toString();
+		if (content.isEmpty()) {
+			return;
+		}
+
+		Message message = new Message(this.entry, content,
+				this.settings.getLogo(), MessageType.text);
+		
+		this.sendMessage(message);
+	}
+
+	@Override
+	public void sendMessage(Message message) {
+		this.addLocalMessage(message);
+		this.sendRemoteMessage(message);
+	}
+
+	private void addLocalMessage(Message message) {
+		this.messagesList.add(message);
+		this.adapter.notifyDataSetChanged();
+	}
+
+	private void sendRemoteMessage(Message message) {
+		for (Entry entry : this.entries) {
+			// send message
+		}
 	}
 
 	public void addRemoteMessage(Message message) {
@@ -86,19 +136,11 @@ public class Conversation extends ListFragment {
 		return false;
 	}
 
-	private void addLocalMessage() {
-		Message message = new Message(new Entry(getActivity().getResources()
-				.getString(R.string.me), "", "", null), this.content.getText()
-				.toString(), this.settings.getLogo());
-
-		this.messagesList.add(0, message);
-		this.adapter.notifyDataSetChanged();
-	}
-
-	private void sendRemoteMessage() {
-		for (Entry entry : this.entries) {
-			// send message
-		}
+	private boolean showActions(View view) {
+		DemoPopupWindow dw = new DemoPopupWindow(this.getActivity()
+				.getBaseContext(), view, this.entry, this.settings, this);
+		dw.showLikeQuickAction(0, 30);
+		return true;
 	}
 
 	private void PopulateList() throws Exception {
@@ -112,4 +154,72 @@ public class Conversation extends ListFragment {
 	public int getMessagesCount() {
 		return this.messagesList.size();
 	}
+
+	private static class DemoPopupWindow extends BetterPopupWindow implements
+			OnClickListener {
+
+		private IMessageSender messageSender = null;
+		Context context = null;
+		Entry entry = null;
+		Settings settings = null;
+
+		public DemoPopupWindow(Context context, View anchor, Entry entry,
+				Settings settings, IMessageSender messageSender) {
+			super(anchor);
+			this.context = context;
+			this.entry = entry;
+			this.settings = settings;
+			this.messageSender = messageSender;
+		}
+
+		@Override
+		protected void onCreate() {
+			// inflate layout
+			LayoutInflater inflater = (LayoutInflater) this.anchor.getContext()
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+			ViewGroup root = (ViewGroup) inflater.inflate(
+					R.layout.popup_actions_layout, null);
+
+			// setup button events
+			for (int i = 0, icount = root.getChildCount(); i < icount; i++) {
+				View item = root.getChildAt(i);
+				if (item instanceof ImageView) {
+					ImageView imageView = (ImageView) item;
+					imageView.setOnClickListener(this);
+				}
+			}
+
+			// set the inflated view as what we want to display
+			this.setContentView(root);
+		}
+
+		@Override
+		public void onClick(View v) {
+			ImageView imageView = (ImageView) v;
+			if (imageView.getId() == R.id.camera) {
+				this.sendCameraRequest();
+
+			} else if (imageView.getId() == R.id.video) {
+				this.sendVideoRequest();
+			}
+
+			this.dismiss();
+		}
+
+		private void sendCameraRequest() {
+			Message message = new Message(this.entry,
+					this.context.getString(R.string.ask_for_image),
+					this.settings.getLogo(), MessageType.RequestImage);
+			this.messageSender.sendMessage(message);
+		}
+
+		private void sendVideoRequest() {
+			Message message = new Message(this.entry,
+					this.context.getString(R.string.ask_for_video),
+					this.settings.getLogo(), MessageType.RequestVideo);
+			this.messageSender.sendMessage(message);
+		}
+	}
+
 }

@@ -6,13 +6,20 @@ import com.google.gson.Gson;
 
 public class Message implements Serializable {
 
+	public enum MessageType{
+		text,
+		RequestImage,
+		RequestVideo
+	};
+	
 	private static final long serialVersionUID = 1L;
 
-	public Message(Entry from, String content, String logo) {
+	public Message(Entry from, String content, String logo, MessageType type) {
 
 		this.from = from;
 		this.content = content;
 		this.logo = logo;
+		this.type = type;
 	}
 
 	public Entry getFrom() {
@@ -25,6 +32,10 @@ public class Message implements Serializable {
 
 	public String getLogo() {
 		return this.logo;
+	}
+	
+	public MessageType getType() {
+		return this.type;
 	}
 	
 	private String toDefault(String value) {
@@ -48,7 +59,12 @@ public class Message implements Serializable {
 		this.logo = logo;
 	}
 	
+	public void setType(MessageType type) {
+		this.type =type;
+	}
+	
 	private Entry from;
 	private String content;
 	private String logo;
+	private MessageType type;
 }
