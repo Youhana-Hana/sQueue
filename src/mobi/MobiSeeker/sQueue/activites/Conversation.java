@@ -10,8 +10,11 @@ import mobi.MobiSeeker.sQueue.data.IMessageSender;
 import mobi.MobiSeeker.sQueue.data.MessageAdapter;
 import mobi.MobiSeeker.sQueue.data.Messages;
 import mobi.MobiSeeker.sQueue.data.Settings;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,7 @@ public class Conversation extends ListFragment implements IMessageSender {
 	private Settings settings;
 	private Entry entry;
 	private String nodeName;
+	private Context context;
 
 	public Conversation() {
 		this.entries = new ArrayList<Entry>();
@@ -49,10 +53,10 @@ public class Conversation extends ListFragment implements IMessageSender {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		try {
-			Context context = this.getActivity().getBaseContext();
-			this.settings = new Settings(context);
-			
-			this.entry = new Entry(context.getString(R.string.me),
+			this.context = this.getActivity().getBaseContext();
+			this.settings = new Settings(this.context);
+
+			this.entry = new Entry(this.context.getString(R.string.me),
 					this.nodeName, this.settings.getLogo(), null);
 
 			PopulateList();
@@ -96,7 +100,7 @@ public class Conversation extends ListFragment implements IMessageSender {
 
 		Message message = new Message(this.entry, content,
 				this.settings.getLogo(), MessageType.text);
-		
+
 		this.sendMessage(message);
 	}
 
@@ -117,9 +121,97 @@ public class Conversation extends ListFragment implements IMessageSender {
 		}
 	}
 
+	public void sendFile(String fileName) {
+		for (Entry entry : this.entries) {
+			// send message
+		}
+	}
+
 	public void addRemoteMessage(Message message) {
-		this.messagesList.add(0, message);
-		this.adapter.notifyDataSetChanged();
+		if (message.getType() == MessageType.text) {
+			this.messagesList.add(message);
+			this.adapter.notifyDataSetChanged();
+		} else if (message.getType() == MessageType.RequestImage) {
+			requestImage(message);
+		} else if (message.getType() == MessageType.RequestVideo) {
+			requestVideo(message);
+		}
+	}
+
+	private String getEntryName(Entry entry) {
+		String tabNme = entry.getName().isEmpty() ? entry.getNodeName() : entry
+				.getName();
+		return tabNme;
+	}
+
+	public void requestImage(Message message) {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+		alertDialog.setTitle(context
+				.getString(R.string.request_image_alert_title));
+		alertDialog.setMessage(getEntryName(message.getFrom())
+				+ context.getString(R.string.request_image_alert_text));
+		alertDialog.setPositiveButton(
+				this.getResources().getString(android.R.string.yes),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						captureCamera();
+					}
+
+					private void captureCamera() {
+						Intent cameraIntent = new Intent(
+								android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+						startActivityForResult(cameraIntent,
+								Queue.CAMERA_REQUEST);
+					}
+				});
+
+		alertDialog.setNegativeButton(
+				this.getResources().getString(android.R.string.no),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Message message = new Message(entry, context
+								.getString(R.string.ask_for_image_declined),
+								settings.getLogo(), null);
+						sendMessage(message);
+					}
+				});
+
+		alertDialog.create().show();
+	}
+
+	public void requestVideo(Message message) {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+		alertDialog.setTitle(context
+				.getString(R.string.request_video_alert_title));
+		alertDialog.setMessage(getEntryName(message.getFrom())
+				+ context.getString(R.string.request_video_alert_text));
+		alertDialog.setPositiveButton(
+				this.getResources().getString(android.R.string.yes),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						captureCamera();
+					}
+
+					private void captureCamera() {
+						Intent cameraIntent = new Intent(
+								android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
+						startActivityForResult(cameraIntent,
+								Queue.CAMERA_REQUEST);
+					}
+				});
+
+		alertDialog.setNegativeButton(
+				this.getResources().getString(android.R.string.no),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Message message = new Message(entry, context
+								.getString(R.string.ask_for_video_declined),
+								settings.getLogo(), null);
+						sendMessage(message);
+					}
+				});
+
+		alertDialog.create().show();
 	}
 
 	public void addEntry(Entry entry) {
