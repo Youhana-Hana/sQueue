@@ -422,7 +422,7 @@ public class Queue extends BaseActivity implements ActionBar.TabListener ,onConn
 				if(entry.getNodeObject().nodeName.equalsIgnoreCase(node))
 				{
 					
-				Message messageObject=new Message(entry, message, entry.getLogo());
+				Message messageObject=new Message(entry, message, entry.getLogo(),null);
 				conversion.addRemoteMessage(messageObject);
 				return;
 				}
@@ -437,7 +437,7 @@ public class Queue extends BaseActivity implements ActionBar.TabListener ,onConn
 		entry.setNodeObject(nodeObject);
 		Tab tab=AddConversationTab(entry, nodeObject.nodeValue, true);
 		if(tab.getTag()!=null){
-			Message messageObject=new Message(entry, message, entry.getLogo());
+			Message messageObject=new Message(entry, message, entry.getLogo(),null);
 
 			((Conversation)tab.getTag()).addRemoteMessage(messageObject);
 			
@@ -475,7 +475,7 @@ public class Queue extends BaseActivity implements ActionBar.TabListener ,onConn
 			Entry entry=new Entry(nodeObject.nodeName,nodeObject.nodeValue,nodeObject.nodeImagePath,null);
 			entry.setName(nodeObject.nodeValue);
 			entry.setNodeObject(nodeObject);
-			Message messageObject=new Message(entry, message, entry.getLogo());
+			Message messageObject=new Message(entry, message, entry.getLogo(),null);
 			mSectionsPagerAdapter.AddRemoteMessageToNodeList(messageObject);
 			}
 

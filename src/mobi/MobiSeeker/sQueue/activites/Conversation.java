@@ -108,10 +108,6 @@ public class Conversation extends ListFragment implements IMessageSender {
 		this.sendMessage(message);
 	}
 
-<<<<<<< HEAD
-	public void addRemoteMessage(Message message) {
-		this.messagesList.add( message);
-=======
 	@Override
 	public void sendMessage(Message message) {
 		this.addLocalMessage(message);
@@ -120,7 +116,6 @@ public class Conversation extends ListFragment implements IMessageSender {
 
 	private void addLocalMessage(Message message) {
 		this.messagesList.add(message);
->>>>>>> 580987ccc77a2d637f713a4011582ff32b32fd40
 		this.adapter.notifyDataSetChanged();
 	}
 
@@ -237,11 +232,11 @@ public class Conversation extends ListFragment implements IMessageSender {
 		return false;
 	}
 
-<<<<<<< HEAD
+
 	private void addLocalMessage() {
 		Message message = new Message(new Entry(getActivity().getResources()
 				.getString(R.string.me), "", "", null), this.content.getText()
-				.toString(), this.settings.getLogo());
+				.toString(), this.settings.getLogo(), null);
 
 		this.messagesList.add( message);
 		this.getListView().setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -262,13 +257,12 @@ public class Conversation extends ListFragment implements IMessageSender {
 	
 		}
 		
-=======
+	}
 	private boolean showActions(View view) {
 		DemoPopupWindow dw = new DemoPopupWindow(this.getActivity()
 				.getBaseContext(), view, this.entry, this.settings, this);
 		dw.showLikeQuickAction(0, 30);
 		return true;
->>>>>>> 580987ccc77a2d637f713a4011582ff32b32fd40
 	}
 
 	private void PopulateList() throws Exception {
@@ -282,7 +276,6 @@ public class Conversation extends ListFragment implements IMessageSender {
 	public int getMessagesCount() {
 		return this.messagesList.size();
 	}
-<<<<<<< HEAD
 	
 	public Entry getCurrentEntry(String nodeName)
 	{
@@ -296,7 +289,6 @@ public class Conversation extends ListFragment implements IMessageSender {
 		return null;
 	}
 	
-=======
 
 	private static class DemoPopupWindow extends BetterPopupWindow implements
 			OnClickListener {
@@ -365,5 +357,4 @@ public class Conversation extends ListFragment implements IMessageSender {
 		}
 	}
 
->>>>>>> 580987ccc77a2d637f713a4011582ff32b32fd40
 }

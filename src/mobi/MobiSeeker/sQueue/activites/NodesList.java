@@ -81,7 +81,7 @@ public class NodesList extends ListFragment
 	private void addLocalMessage() {
 		Message message = new Message(new Entry(getActivity().getResources()
 				.getString(R.string.me), "", "", null), this.message_content.getText()
-				.toString(), new Settings(this.getActivity()).getLogo());
+				.toString(), new Settings(this.getActivity()).getLogo(),null);
 
 		this.messageList.add( message);
 		this.messagetextView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
