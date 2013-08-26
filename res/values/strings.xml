@@ -24,4 +24,12 @@
     <string name="empty_conversation">No conversations.</string>
     <string name="me">Me</string>
     <string name="all">All</string>
+    <string name="ask_for_image">Request an image</string>
+    <string name="ask_for_video">Request a video</string>
+    <string name="ask_for_image_declined">Sorry, your request for image has been declined</string>
+    <string name="request_image_alert_title">Request an image</string>
+    <string name="request_image_alert_text">requested an image from what you see around to know what\'s going on.</string>
+    <string name="ask_for_video_declined">Sorry, your request for video has been declined</string>
+    <string name="request_video_alert_title">Request a video</string>
+    <string name="request_video_alert_text">requested a video from what you see around to know what\'s going on.</string>
  </resources>

@@ -46,9 +46,10 @@ public class Queue extends BaseActivity implements ActionBar.TabListener ,onConn
 	public static final String New_Messag_Action = "mobi.MobiSeeker.sQueue.NEW_MESSAGE";
 	public static final String View_Contact_Action = "mobi.MobiSeeker.sQueue.VIEW_CONTACT";
 	private static final String Remove_Conversation = "mobi.MobiSeeker.sQueue.REMOVE_CONTAC1T";
-	private final int REQ_CODE_PICK_IMAGE_SETTINS = 1;
-	private final int REQ_CODE_PICK_IMAGE = 2;
-
+	public final static int REQ_CODE_PICK_IMAGE_SETTINS = 1;
+	public final static int REQ_CODE_PICK_IMAGE = 2;
+	public final static int CAMERA_REQUEST = 3;
+	
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	BroadcastReceiver receiver;
@@ -280,6 +281,23 @@ public class Queue extends BaseActivity implements ActionBar.TabListener ,onConn
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
 		switch (requestCode) {
+		case Queue.CAMERA_REQUEST: {
+			if (resultCode != RESULT_OK) {
+				return;
+			}
+
+			if (imageReturnedIntent == null) {
+				return;
+			}
+
+			String fileName = this.getImagePathFromIntent(imageReturnedIntent);
+			
+			Conversation conversation = (Conversation) mSectionsPagerAdapter
+					.instantiateItem(mViewPager, getActionBar().getSelectedNavigationIndex());
+			
+			conversation.sendFile(fileName);
+			break;
+		}
 		case REQ_CODE_PICK_IMAGE:
 		case REQ_CODE_PICK_IMAGE_SETTINS:
 			if (resultCode != RESULT_OK) {
@@ -318,6 +336,13 @@ public class Queue extends BaseActivity implements ActionBar.TabListener ,onConn
 	private String getImageFromGallery(Intent imageReturnedIntent,
 			ImageView image) {
 
+		String path = this.getImagePathFromIntent(imageReturnedIntent);
+		image.setImageBitmap(BitmapFactory.decodeFile(path));
+		return path;
+	}
+
+	private String getImagePathFromIntent(Intent imageReturnedIntent) {
+
 		Uri selectedImage = imageReturnedIntent.getData();
 
 		String[] filePathColumn = { android.provider.MediaStore.Images.Media.DATA };
@@ -331,10 +356,9 @@ public class Queue extends BaseActivity implements ActionBar.TabListener ,onConn
 		String imagePath = cursor.getString(columnIndex);
 		cursor.close();
 
-		image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
 		return imagePath;
 	}
-
+	
 	private void addTabs(final ActionBar actionBar) {
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			actionBar.addTab(actionBar.newTab()

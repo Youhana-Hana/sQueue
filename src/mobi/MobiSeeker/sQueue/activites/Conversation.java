@@ -8,20 +8,26 @@ import mobi.MobiSeeker.sQueue.connection.NodeManager;
 import mobi.MobiSeeker.sQueue.connection.ServiceManger;
 import mobi.MobiSeeker.sQueue.data.Entry;
 import mobi.MobiSeeker.sQueue.data.Message;
+import mobi.MobiSeeker.sQueue.data.Message.MessageType;
+import mobi.MobiSeeker.sQueue.data.IMessageSender;
 import mobi.MobiSeeker.sQueue.data.MessageAdapter;
 import mobi.MobiSeeker.sQueue.data.Messages;
 import mobi.MobiSeeker.sQueue.data.Settings;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class Conversation extends ListFragment {
+public class Conversation extends ListFragment implements IMessageSender {
 
 	private ImageView send = null;
 	private Messages messages = null;
@@ -30,17 +36,33 @@ public class Conversation extends ListFragment {
 	private ArrayList<Message> messagesList;
 	private EditText content;
 	private Settings settings;
+	private Entry entry;
+	private String nodeName;
+	private Context context;
 
 	public Conversation() {
 		this.entries = new ArrayList<Entry>();
 		this.messages = new Messages();
 	}
-	
+
+	public String getNodeName() {
+		return nodeName;
+	}
+
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		try {
-			this.settings = new Settings(this.getActivity().getBaseContext());
+			this.context = this.getActivity().getBaseContext();
+			this.settings = new Settings(this.context);
+
+			this.entry = new Entry(this.context.getString(R.string.me),
+					this.nodeName, this.settings.getLogo(), null);
+
 			PopulateList();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,7 +72,7 @@ public class Conversation extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+
 		View rootView = inflater.inflate(R.layout.conversation, container,
 				false);
 
@@ -59,21 +81,146 @@ public class Conversation extends ListFragment {
 		this.send.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				sendMessage();
+				sendContent();
+			}
+		});
+
+		this.send.setOnLongClickListener(new View.OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				return showActions(v);
 			}
 		});
 
 		return rootView;
 	}
 
-	public void sendMessage() {
-		this.addLocalMessage();
-		this.sendRemoteMessage();
+	private void sendContent() {
+		String content = this.content.getText().toString();
+		if (content.isEmpty()) {
+			return;
+		}
+
+		Message message = new Message(this.entry, content,
+				this.settings.getLogo(), MessageType.text);
+
+		this.sendMessage(message);
+	}
+
+<<<<<<< HEAD
+	public void addRemoteMessage(Message message) {
+		this.messagesList.add( message);
+=======
+	@Override
+	public void sendMessage(Message message) {
+		this.addLocalMessage(message);
+		this.sendRemoteMessage(message);
+	}
+
+	private void addLocalMessage(Message message) {
+		this.messagesList.add(message);
+>>>>>>> 580987ccc77a2d637f713a4011582ff32b32fd40
+		this.adapter.notifyDataSetChanged();
+	}
+
+	private void sendRemoteMessage(Message message) {
+		for (Entry entry : this.entries) {
+			// send message
+		}
+	}
+
+	public void sendFile(String fileName) {
+		for (Entry entry : this.entries) {
+			// send message
+		}
 	}
 
 	public void addRemoteMessage(Message message) {
-		this.messagesList.add( message);
-		this.adapter.notifyDataSetChanged();
+		if (message.getType() == MessageType.text) {
+			this.messagesList.add(message);
+			this.adapter.notifyDataSetChanged();
+		} else if (message.getType() == MessageType.RequestImage) {
+			requestImage(message);
+		} else if (message.getType() == MessageType.RequestVideo) {
+			requestVideo(message);
+		}
+	}
+
+	private String getEntryName(Entry entry) {
+		String tabNme = entry.getName().isEmpty() ? entry.getNodeName() : entry
+				.getName();
+		return tabNme;
+	}
+
+	public void requestImage(Message message) {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+		alertDialog.setTitle(context
+				.getString(R.string.request_image_alert_title));
+		alertDialog.setMessage(getEntryName(message.getFrom())
+				+ context.getString(R.string.request_image_alert_text));
+		alertDialog.setPositiveButton(
+				this.getResources().getString(android.R.string.yes),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						captureCamera();
+					}
+
+					private void captureCamera() {
+						Intent cameraIntent = new Intent(
+								android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+						startActivityForResult(cameraIntent,
+								Queue.CAMERA_REQUEST);
+					}
+				});
+
+		alertDialog.setNegativeButton(
+				this.getResources().getString(android.R.string.no),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Message message = new Message(entry, context
+								.getString(R.string.ask_for_image_declined),
+								settings.getLogo(), null);
+						sendMessage(message);
+					}
+				});
+
+		alertDialog.create().show();
+	}
+
+	public void requestVideo(Message message) {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+		alertDialog.setTitle(context
+				.getString(R.string.request_video_alert_title));
+		alertDialog.setMessage(getEntryName(message.getFrom())
+				+ context.getString(R.string.request_video_alert_text));
+		alertDialog.setPositiveButton(
+				this.getResources().getString(android.R.string.yes),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						captureCamera();
+					}
+
+					private void captureCamera() {
+						Intent cameraIntent = new Intent(
+								android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
+						startActivityForResult(cameraIntent,
+								Queue.CAMERA_REQUEST);
+					}
+				});
+
+		alertDialog.setNegativeButton(
+				this.getResources().getString(android.R.string.no),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Message message = new Message(entry, context
+								.getString(R.string.ask_for_video_declined),
+								settings.getLogo(), null);
+						sendMessage(message);
+					}
+				});
+
+		alertDialog.create().show();
 	}
 
 	public void addEntry(Entry entry) {
@@ -90,6 +237,7 @@ public class Conversation extends ListFragment {
 		return false;
 	}
 
+<<<<<<< HEAD
 	private void addLocalMessage() {
 		Message message = new Message(new Entry(getActivity().getResources()
 				.getString(R.string.me), "", "", null), this.content.getText()
@@ -114,6 +262,13 @@ public class Conversation extends ListFragment {
 	
 		}
 		
+=======
+	private boolean showActions(View view) {
+		DemoPopupWindow dw = new DemoPopupWindow(this.getActivity()
+				.getBaseContext(), view, this.entry, this.settings, this);
+		dw.showLikeQuickAction(0, 30);
+		return true;
+>>>>>>> 580987ccc77a2d637f713a4011582ff32b32fd40
 	}
 
 	private void PopulateList() throws Exception {
@@ -127,6 +282,7 @@ public class Conversation extends ListFragment {
 	public int getMessagesCount() {
 		return this.messagesList.size();
 	}
+<<<<<<< HEAD
 	
 	public Entry getCurrentEntry(String nodeName)
 	{
@@ -140,4 +296,74 @@ public class Conversation extends ListFragment {
 		return null;
 	}
 	
+=======
+
+	private static class DemoPopupWindow extends BetterPopupWindow implements
+			OnClickListener {
+
+		private IMessageSender messageSender = null;
+		Context context = null;
+		Entry entry = null;
+		Settings settings = null;
+
+		public DemoPopupWindow(Context context, View anchor, Entry entry,
+				Settings settings, IMessageSender messageSender) {
+			super(anchor);
+			this.context = context;
+			this.entry = entry;
+			this.settings = settings;
+			this.messageSender = messageSender;
+		}
+
+		@Override
+		protected void onCreate() {
+			// inflate layout
+			LayoutInflater inflater = (LayoutInflater) this.anchor.getContext()
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+			ViewGroup root = (ViewGroup) inflater.inflate(
+					R.layout.popup_actions_layout, null);
+
+			// setup button events
+			for (int i = 0, icount = root.getChildCount(); i < icount; i++) {
+				View item = root.getChildAt(i);
+				if (item instanceof ImageView) {
+					ImageView imageView = (ImageView) item;
+					imageView.setOnClickListener(this);
+				}
+			}
+
+			// set the inflated view as what we want to display
+			this.setContentView(root);
+		}
+
+		@Override
+		public void onClick(View v) {
+			ImageView imageView = (ImageView) v;
+			if (imageView.getId() == R.id.camera) {
+				this.sendCameraRequest();
+
+			} else if (imageView.getId() == R.id.video) {
+				this.sendVideoRequest();
+			}
+
+			this.dismiss();
+		}
+
+		private void sendCameraRequest() {
+			Message message = new Message(this.entry,
+					this.context.getString(R.string.ask_for_image),
+					this.settings.getLogo(), MessageType.RequestImage);
+			this.messageSender.sendMessage(message);
+		}
+
+		private void sendVideoRequest() {
+			Message message = new Message(this.entry,
+					this.context.getString(R.string.ask_for_video),
+					this.settings.getLogo(), MessageType.RequestVideo);
+			this.messageSender.sendMessage(message);
+		}
+	}
+
+>>>>>>> 580987ccc77a2d637f713a4011582ff32b32fd40
 }

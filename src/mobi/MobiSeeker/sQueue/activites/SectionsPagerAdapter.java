@@ -16,6 +16,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 	private Context context;
 	private int maxPagesCount;
 	private ArrayList<Fragment> items;
+	private String nodeName = null;
 	
 	NodesList nodeList;
 	
@@ -28,6 +29,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		this.items = new ArrayList<Fragment>();
 		this.items.add(nodeList);
 		this.items.add(new SettingsFragment());
+		this.nodeName = nodeName;
 	}
 
 	@Override
@@ -67,7 +69,9 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 	}
 
 	public void AddPageIn(int index) {
-		this.items.add(index, new Conversation());
+		Conversation conversation = new Conversation();
+		conversation.setNodeName(this.nodeName);
+		this.items.add(index, conversation);
 		this.maxPagesCount++;
 	}
 
