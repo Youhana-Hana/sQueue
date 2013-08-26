@@ -3,6 +3,9 @@ package mobi.MobiSeeker.sQueue.activites;
 import java.util.ArrayList;
 
 import mobi.MobiSeeker.sQueue.R;
+import mobi.MobiSeeker.sQueue.connection.ConnectionConstant;
+import mobi.MobiSeeker.sQueue.connection.NodeManager;
+import mobi.MobiSeeker.sQueue.connection.ServiceManger;
 import mobi.MobiSeeker.sQueue.data.Entry;
 import mobi.MobiSeeker.sQueue.data.Message;
 import mobi.MobiSeeker.sQueue.data.MessageAdapter;
@@ -14,6 +17,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -68,7 +72,7 @@ public class Conversation extends ListFragment {
 	}
 
 	public void addRemoteMessage(Message message) {
-		this.messagesList.add(0, message);
+		this.messagesList.add( message);
 		this.adapter.notifyDataSetChanged();
 	}
 
@@ -91,14 +95,25 @@ public class Conversation extends ListFragment {
 				.getString(R.string.me), "", "", null), this.content.getText()
 				.toString(), this.settings.getLogo());
 
-		this.messagesList.add(0, message);
+		this.messagesList.add( message);
+		this.getListView().setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+		this.getListView().setStackFromBottom(true);
 		this.adapter.notifyDataSetChanged();
 	}
 
 	private void sendRemoteMessage() {
-		for (Entry entry : this.entries) {
-			// send message
+		
+		ServiceManger manger=ServiceManger.getInstance(null, false, null);
+		if(manger.getmChordService()!=null)
+		{
+			for(Entry entry:entries){
+			manger.getmChordService().sendData(NodeManager.CHORD_API_CHANNEL, this.content.getText()
+					.toString().getBytes(), entry.getNodeObject().nodeName, ConnectionConstant.SEND_MESSAGE);
+			}
+			this.content.setText("");		
+	
 		}
+		
 	}
 
 	private void PopulateList() throws Exception {
@@ -112,4 +127,17 @@ public class Conversation extends ListFragment {
 	public int getMessagesCount() {
 		return this.messagesList.size();
 	}
+	
+	public Entry getCurrentEntry(String nodeName)
+	{
+		for(Entry entry:entries)
+		{
+			if(entry.getNodeObject().nodeName.equalsIgnoreCase(nodeName))
+				return entry;
+				
+		}
+
+		return null;
+	}
+	
 }

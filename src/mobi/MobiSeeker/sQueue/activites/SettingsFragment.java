@@ -25,10 +25,10 @@ public class SettingsFragment extends PreferenceFragment {
 	
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.picture, container, false);
-
 		Settings settings = new Settings(getActivity());
 		String imagePath = settings.getLogo();
-		if (imagePath != null && !imagePath.isEmpty()) {
+		if (imagePath != null && !imagePath.isEmpty())
+		{
 			ImageView logo = (ImageView) view.findViewById(R.id.logo);
 			if (logo != null) {
 				logo.setImageURI(Uri.parse(imagePath));

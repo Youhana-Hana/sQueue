@@ -49,19 +49,6 @@ public abstract class BaseActivity extends FragmentActivity implements
 	{
 
 	}
-	Ringtone r;
-	Uri notification;
-	public void runNotification()
-	{
-		if(notification==null)
-		 notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		if(r==null)
-		r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-		if(!r.isPlaying())
-		r.play();
-		
-		
-	}
 	
 	public void stopAlaram()
 	{
@@ -78,49 +65,6 @@ public abstract class BaseActivity extends FragmentActivity implements
 	}
 	
 	
-	@Override
-	public void onFileWillReceive(String node, String channel, String fileName,
-			String exchangeId) {
-		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void onFileProgress(boolean bSend, String node, String channel,
-			int progress, String exchangeId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onFileCompleted(int reason, String node, String channel,
-			String exchangeId, String fileName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onNodeEvent(String node, String channel, boolean bJoined) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onNetworkDisconnected() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onUpdateNodeInfo(String nodeName, String ipAddress) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onConnectivityChanged() {
-		// TODO Auto-generated method stub
-
-	}
 
 }

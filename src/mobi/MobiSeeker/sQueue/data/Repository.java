@@ -16,7 +16,8 @@ public class Repository {
 		return this.entries.size();
 	}
 
-	public ArrayList<Entry> getEntries() throws Exception {
+	public ArrayList<Entry> getEntries() throws Exception 
+	{
 		return this.entries;
 	}
 

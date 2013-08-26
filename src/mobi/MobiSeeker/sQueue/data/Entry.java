@@ -2,6 +2,8 @@ package mobi.MobiSeeker.sQueue.data;
 
 import java.io.Serializable;
 
+import mobi.MobiSeeker.sQueue.connection.NodeObject;
+
 import android.location.Location;
 
 import com.google.gson.Gson;
@@ -10,6 +12,8 @@ public class Entry implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private NodeObject nodeObject;
+	
 	public Entry(String name, String nodeName, String logo, Location location) {
 
 		this.name = name;
@@ -63,4 +67,15 @@ public class Entry implements Serializable {
 	private String nodeName;
 	private String logo;
 	private Location location;
+
+	public NodeObject getNodeObject() {
+		return nodeObject;
+	}
+
+	public void setNodeObject(NodeObject nodeObject) {
+		this.nodeObject = nodeObject;
+	}
+	
+	
+	
 }

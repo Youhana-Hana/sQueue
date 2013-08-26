@@ -10,7 +10,7 @@ import java.util.List;
 
 public class NodeManager {
 
-    public static String CHORD_API_CHANNEL ="youssef12345"; 
+    public static String CHORD_API_CHANNEL ="com.mobiseeker.squeue"; 
     	//	"mobi.MobiSeeker.sQueue";
 
     private static final String TAG = "[Chord][ApiService]";

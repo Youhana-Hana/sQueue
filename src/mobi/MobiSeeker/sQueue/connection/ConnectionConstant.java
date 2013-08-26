@@ -6,6 +6,8 @@ public class ConnectionConstant {
 	 public static final String TAGClass = "ChordChannelListener : ";
 
 	 public static final String SEND_MESSAGE = "SEND_RECIEVE_MESSAGE";
+	 public static final String SEND_MESSAGE_TOALL = "SEND_RECIEVE_MESSAGE_ALL";
+
 	 public static final String GET_DEVICE_NAME = "GET_DEVICE_NAME";
 	 public static final String MY_DEVICE_NAME = "MY_DEVICE_NAME";
 

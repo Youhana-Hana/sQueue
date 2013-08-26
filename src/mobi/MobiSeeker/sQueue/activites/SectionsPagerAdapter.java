@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import mobi.MobiSeeker.sQueue.R;
+import mobi.MobiSeeker.sQueue.connection.NodeObject;
+import mobi.MobiSeeker.sQueue.data.Message;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -15,13 +17,16 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 	private int maxPagesCount;
 	private ArrayList<Fragment> items;
 	
+	NodesList nodeList;
+	
 	public SectionsPagerAdapter(FragmentManager fm, Context context,
 			String nodeName) {
 		super(fm);
 		this.context = context;
 		this.maxPagesCount = 2;
+		nodeList=new NodesList();
 		this.items = new ArrayList<Fragment>();
-		this.items.add(new NodesList());
+		this.items.add(nodeList);
 		this.items.add(new SettingsFragment());
 	}
 
@@ -70,4 +75,15 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		this.items.remove(index);
 		this.maxPagesCount--;
 	}
+	
+	public void refreshNodeList(ArrayList<NodeObject> list)
+	{
+	nodeList.PopulateList(list);	
+	}
+	
+	public void AddRemoteMessageToNodeList(Message message)
+	{
+	nodeList.addRemoteMessage(message);	
+	}
+	
 }

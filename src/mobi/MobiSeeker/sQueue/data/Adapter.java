@@ -3,6 +3,7 @@ package mobi.MobiSeeker.sQueue.data;
 import java.util.List;
 
 import mobi.MobiSeeker.sQueue.R;
+import mobi.MobiSeeker.sQueue.connection.NodeObject;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -12,7 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Adapter extends ArrayAdapter<Entry> {
+public class Adapter extends ArrayAdapter<NodeObject> {
 
     static class ViewHolder {
         public TextView name;
@@ -20,9 +21,9 @@ public class Adapter extends ArrayAdapter<Entry> {
     }
 
     protected Context context;
-    protected List<Entry> entries;
+    protected List<NodeObject> entries;
     int resourceId;
-    public Adapter(Context context, int resourceId, List<Entry> entries) {
+    public Adapter(Context context, int resourceId, List<NodeObject> entries) {
         super(context, resourceId, entries);
         this.context = context;
         this.resourceId = resourceId;
@@ -44,17 +45,18 @@ public class Adapter extends ArrayAdapter<Entry> {
         }
 
         ViewHolder viewHolder = (ViewHolder) rowView.getTag();
-        Entry entry = this.entries.get(position);
+        NodeObject entry = this.entries.get(position);
 
-        String name = entry.getName();
+        String name = entry.nodeValue;
         if (name.isEmpty() || name == null) {
-        	name = entry.getNodeName();
+        	name = entry.nodeName;
         }
         
         viewHolder.name.setText(name);
         
         if (viewHolder.logo != null) {
-        	viewHolder.logo.setImageURI(Uri.parse(entry.getLogo()));
+        	if(entry.nodeImagePath!=null)
+        	viewHolder.logo.setImageURI(Uri.parse(entry.nodeImagePath));
         }
         
         return rowView;
